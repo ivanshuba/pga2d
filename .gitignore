@@ -1,0 +1,24 @@
+# PyCharm-specific files
+.idea/
+*.iml
+
+# Python-specific files
+__pycache__/
+*.pyc
+*.pyd
+*.egg-info/
+.pytest_cache/
+htmlcov/
+
+# Virtual environment
+.venv
+venv/
+env/
+
+# Dependency management (optional, if you regenerate lock files)
+# Pipfile.lock
+
+# Temporary and log files
+*.log
+*.tmp
+*.swp
