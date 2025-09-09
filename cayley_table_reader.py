@@ -120,7 +120,7 @@ def print_cayley_table(cayley_lookup, num_elements):
 if __name__ == "__main__":
     # Test with your CSV file
     try:
-        basis_symbols, cayley_lookup = read_cayley_table("PGA2D-Caley.csv")
+        basis_symbols, cayley_lookup = read_cayley_table("PGA2D-Geometric-Product-Caley.csv")
 
         print("Basis symbols:")
         for i, symbol in basis_symbols.items():

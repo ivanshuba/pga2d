@@ -3,9 +3,9 @@ from sympy import symbols
 from cayley_table_reader import read_cayley_table
 
 
-def generate_geometric_product_function_detailed(csv_path):
+def generate_outer_product_function_detailed(csv_path):
     """
-    Generate a geometric product multiplication function with detailed analysis.
+    Generate an outer product multiplication function with detailed analysis.
     """
     # Read the Cayley table
     basis_symbols, cayley_lookup = read_cayley_table(csv_path)
@@ -29,20 +29,20 @@ def generate_geometric_product_function_detailed(csv_path):
     # Generate detailed analysis for each row of the first multivector
     for i in range(num_basis):
         print(f"=" * 80)
-        print(f"Row {i}: Multiplying basis element '{basis_names[i]}' from multivector a")
+        print(f"Row {i}: Outer product of basis element '{basis_names[i]}' from multivector a")
         print(f"=" * 80)
 
         # Stage 1: Raw symbolic form
         print(f"\n1. RAW SYMBOLIC FORM:")
-        print(f"   a[{i}] * {basis_names[i]} * (entire b multivector) =")
+        print(f"   a[{i}] * {basis_names[i]} ^ (entire b multivector) =")
         raw_terms = []
         for j in range(num_basis):
-            raw_term = f"a[{i}]{basis_names[i]} * b[{j}]{basis_names[j]}"
+            raw_term = f"a[{i}]{basis_names[i]} ^ b[{j}]{basis_names[j]}"
             raw_terms.append(raw_term)
-        print(f"   " + " + ".join(raw_terms))
+        print(f"   " + " ^ ".join(raw_terms))
 
         # Stage 2: Converted form (apply Cayley table)
-        print(f"\n2. CONVERTED FORM (after applying Cayley table):")
+        print(f"\n2. CONVERTED FORM (after applying outer product Cayley table):")
         converted_terms = []
         conversion_details = []
 
@@ -52,35 +52,35 @@ def generate_geometric_product_function_detailed(csv_path):
 
                 if factor == 0:
                     converted_term = "0"
-                    detail = f"{basis_names[i]}*{basis_names[j]} = 0"
+                    detail = f"{basis_names[i]}^{basis_names[j]} = 0"
                 elif factor == 1:
                     if result_basis_idx < len(basis_names):
                         result_basis = basis_names[result_basis_idx]
                         converted_term = f"(+1) * a[{i}]b[{j}]{result_basis}"
-                        detail = f"{basis_names[i]}*{basis_names[j]} = +{result_basis}"
+                        detail = f"{basis_names[i]}^{basis_names[j]} = +{result_basis}"
                     else:
                         converted_term = f"(+1) * a[{i}]b[{j}]"
-                        detail = f"{basis_names[i]}*{basis_names[j]} = +1"
+                        detail = f"{basis_names[i]}^{basis_names[j]} = +1"
                 elif factor == -1:
                     if result_basis_idx < len(basis_names):
                         result_basis = basis_names[result_basis_idx]
                         converted_term = f"(-1) * a[{i}]b[{j}]{result_basis}"
-                        detail = f"{basis_names[i]}*{basis_names[j]} = -{result_basis}"
+                        detail = f"{basis_names[i]}^{basis_names[j]} = -{result_basis}"
                     else:
                         converted_term = f"(-1) * a[{i}]b[{j}]"
-                        detail = f"{basis_names[i]}*{basis_names[j]} = -1"
+                        detail = f"{basis_names[i]}^{basis_names[j]} = -1"
                 else:
                     converted_term = f"({factor}) * a[{i}]b[{j}]"
-                    detail = f"{basis_names[i]}*{basis_names[j]} = {factor}"
+                    detail = f"{basis_names[i]}^{basis_names[j]} = {factor}"
 
                 converted_terms.append(converted_term)
                 conversion_details.append(detail)
             else:
                 converted_terms.append("UNKNOWN")
-                conversion_details.append(f"{basis_names[i]}*{basis_names[j]} = UNKNOWN")
+                conversion_details.append(f"{basis_names[i]}^{basis_names[j]} = UNKNOWN")
 
         print("   " + " + ".join(converted_terms))
-        print("\n   Basis multiplication details:")
+        print("\n   Basis outer product details:")
         for detail in conversion_details:
             print(f"     {detail}")
 
@@ -119,12 +119,12 @@ def generate_geometric_product_function_detailed(csv_path):
 
     # Generate the final function
     print("=" * 80)
-    print("FINAL GENERATED FUNCTION")
+    print("FINAL GENERATED OUTER PRODUCT FUNCTION")
     print("=" * 80)
 
-    function_code = """def geometric_product(a, b):
+    function_code = """def outer_product(a, b):
     \"\"\"
-    Compute the geometric product of two PGA2D multivectors.
+    Compute the outer product of two PGA2D multivectors.
 
     Args:
         a: List/array of 8 coefficients for multivector a
@@ -161,20 +161,20 @@ def generate_geometric_product_function_detailed(csv_path):
 
 if __name__ == "__main__":
     try:
-        function_code, basis_symbols, result_terms = generate_geometric_product_function_detailed(
-            "PGA2D-Geometric-Product-Caley.csv")
+        function_code, basis_symbols, result_terms = generate_outer_product_function_detailed(
+            "PGA2D-Outer-Product-Caley.csv")
 
         print(function_code)
 
         # Save to file
-        with open("generated_geometric_product.py", "w") as f:
-            f.write("# Auto-generated geometric product function for PGA2D\n")
+        with open("generated_outer_product.py", "w") as f:
+            f.write("# Auto-generated outer product function for PGA2D\n")
             f.write("# Generated with detailed analysis\n\n")
             f.write(function_code)
 
-        print(f"\nFunction saved to 'generated_geometric_product_detailed.py'")
+        print(f"\nFunction saved to 'generated_outer_product.py'")
 
     except FileNotFoundError:
-        print("CSV file not found. Please make sure 'PGA2D-Geometric-Product-Caley.csv' exists.")
+        print("CSV file not found. Please make sure 'PGA2D-Outer-Product-Caley.csv' exists.")
     except Exception as e:
         print(f"Error: {e}")
