@@ -190,18 +190,33 @@ class PGA2D:
         res[7]=a[0]*b[7]+a[1]*b[6]-a[2]*b[5]+a[3]*b[4]+a[4]*b[3]-a[5]*b[2]+a[6]*b[1]+a[7]*b[0]  # e012
         return  PGA2D.fromarray(res)
 
+    # EXPERIMENTAL, MUST BE TESTED
     # Regressive?/Join product - &
     def __and__(a,b):
+        # ORIGINAL VERSION with e20 instead of e02 for comparison
+        # res = a.mvec.copy()
+        # res[7]=1*(a[7]*b[7])
+        # res[6]=1*(a[6]*b[7]+a[7]*b[6])
+        # res[5]=1*(a[5]*b[7]+a[7]*b[5])
+        # res[4]=1*(a[4]*b[7]+a[7]*b[4])
+        # res[3]=1*(a[3]*b[7]+a[5]*b[6]-a[6]*b[5]+a[7]*b[3])
+        # res[2]=1*(a[2]*b[7]-a[4]*b[6]+a[6]*b[4]+a[7]*b[2])
+        # res[1]=1*(a[1]*b[7]+a[4]*b[5]-a[5]*b[4]+a[7]*b[1])
+        # res[0]=1*(a[0]*b[7]+a[1]*b[6]+a[2]*b[5]+a[3]*b[4]+a[4]*b[3]+a[5]*b[2]+a[6]*b[1]+a[7]*b[0])
+        # return PGA2D.fromarray(res)
+
+        # This was produced by noticing that the regressive product originally has the same shape
+        # the wedge product has, just the different indices.
         res = a.mvec.copy()
-        res[7]=1*(a[7]*b[7])
-        res[6]=1*(a[6]*b[7]+a[7]*b[6])
-        res[5]=1*(a[5]*b[7]+a[7]*b[5])
-        res[4]=1*(a[4]*b[7]+a[7]*b[4])
-        res[3]=1*(a[3]*b[7]+a[5]*b[6]-a[6]*b[5]+a[7]*b[3])
-        res[2]=1*(a[2]*b[7]-a[4]*b[6]+a[6]*b[4]+a[7]*b[2])
-        res[1]=1*(a[1]*b[7]+a[4]*b[5]-a[5]*b[4]+a[7]*b[1])
-        res[0]=1*(a[0]*b[7]+a[1]*b[6]+a[2]*b[5]+a[3]*b[4]+a[4]*b[3]+a[5]*b[2]+a[6]*b[1]+a[7]*b[0])
-        return PGA2D.fromarray(res)
+        res[7]=a[7]*b[7]                                                                        # 1
+        res[6]=a[6]*b[7]+a[7]*b[6]                                                              # e0
+        res[5]=a[5]*b[7]+a[7]*b[5]                                                              # e1
+        res[4]=a[4]*b[7]+a[7]*b[4]                                                              # e2
+        res[4]=a[3]*b[7]+a[5]*b[6]-a[6]*b[5]+a[7]*b[3]                                          # e01
+        res[5]=a[2]*b[7]+a[4]*b[6]-a[6]*b[4]+a[7]*b[2]                                          # e02
+        res[6]=a[1]*b[7]+a[4]*b[5]-a[5]*b[4]+a[7]*b[1]                                          # e12
+        res[7]=a[0]*b[7]+a[1]*b[6]-a[2]*b[5]+a[3]*b[4]+a[4]*b[3]-a[5]*b[2]+a[6]*b[1]+a[7]*b[0]  # e012
+        return  PGA2D.fromarray(res)
 
     # Inner product - |
     def __or__(a,b):
