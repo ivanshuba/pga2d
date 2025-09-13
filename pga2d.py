@@ -14,7 +14,7 @@ in computer graphics (including the JavaScript canvases one) in which the Y axis
 instead of up as in the regular Euclidean space.
 """
 
-__author__ = 'Enki'
+__author__ = 'IvanShuba'
 
 import math
 
@@ -48,15 +48,39 @@ class PGA2D:
                             'of the algebra.')
         self.mvec = array
         return self
-        
+
     def __str__(self):
         if isinstance(self.mvec, list):
-            res = ' + '.join(filter(None, [("%.7f" % x).rstrip("0").rstrip(".")+(["",self._base[i]][i>0]) if abs(x) > 0.000001 else None for i,x in enumerate(self)]))
+            terms = []
+            for i, coefficient in enumerate(self.mvec):  # Changed from enumerate(self)
+                # Skip terms with very small coefficients
+                if abs(coefficient) <= 0.000001:
+                    continue
+
+                # Format the coefficient (remove trailing zeros and decimal point if needed)
+                coeff_str = ("%.7f" % coefficient).rstrip("0").rstrip(".")
+
+                # Get the basis element name (empty string for scalar term at index 0)
+                if i == 0:
+                    basis_element = ""
+                else:
+                    basis_element = self._base[i]
+
+                # Combine coefficient and basis element
+                term = coeff_str + basis_element
+                terms.append(term)
+
+            # Join all terms with " + "
+            res = ' + '.join(terms)
         else:  # Assume array-like, redirect str conversion
             res = str(self.mvec)
-        if (res == ''):
+
+        if res == '':
             return "0"
         return res
+
+    def __repr__(self):
+        return self.__str__()
 
     def __getitem__(self, key):
         return self.mvec[key]
@@ -376,11 +400,18 @@ class PGA2D:
     def normalized(a):
         return a * (1 / a.norm())
 
+    def point(x, y):
+        return PGA2D.Dual(e0 + x*e1 + y*e2)
+
+    def line(a, b, c):
+        return (a*e1 + b*e2 + c*e0)
+
+
 e0 = PGA2D(1.0, 1)
 e1 = PGA2D(1.0, 2)
 e2 = PGA2D(1.0, 3)
 e01 = PGA2D(1.0, 4)
-e20 = PGA2D(1.0, 5)
+e02 = PGA2D(1.0, 5)
 e12 = PGA2D(1.0, 6)
 e012 = PGA2D(1.0, 7)
 
@@ -388,4 +419,5 @@ if __name__ == '__main__':
     print("e0*e0         :", str(e0*e0))
     print("pss           :", str(e012))
     print("pss*pss       :", str(e012*e012))
+    print("Direct pring", e1)
 
